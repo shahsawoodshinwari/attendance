@@ -21,16 +21,20 @@ trait HasAttendance
 
     public function hasTimeIn(?Carbon $time = null): bool
     {
+        $date = $time ?? now();
+
         return $this->attendance()
-            ->where('date', $time ? $time->toDateString() : now()->toDateString())
+            ->whereDate('date', $date)
             ->where('type', AttendanceTypeEnum::in())
             ->exists();
     }
 
     public function hasTimeOut(?Carbon $time = null): bool
     {
+        $date = $time ?? now();
+
         return $this->attendance()
-            ->where('date', $time ? $time->toDateString() : now()->toDateString())
+            ->whereDate('date', $date)
             ->where('type', AttendanceTypeEnum::out())
             ->exists();
     }
@@ -42,8 +46,10 @@ trait HasAttendance
 
     public function getTimeIn(?Carbon $time = null): ?Model
     {
+        $date = $time ?? now();
+
         return $this->attendance()
-            ->where('date', $time ? $time->toDateString() : now()->toDateString())
+            ->whereDate('date', $date)
             ->where('type', AttendanceTypeEnum::in())
             ->first();
     }

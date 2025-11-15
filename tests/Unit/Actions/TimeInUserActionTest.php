@@ -55,8 +55,15 @@ class TimeInUserActionTest extends TestCase
             'user_id' => $user->id,
             'status' => 'on-time',
             'type' => 'in',
-            'date' => $timeNow->toDateString(),
-            'time' => $timeNow->toTimeString(),
         ]);
+        
+        // Verify date and time separately since Laravel 12 casts date as datetime
+        $this->assertTrue(
+            AttendanceLog::where('user_id', $user->id)
+                ->where('type', 'in')
+                ->whereDate('date', $timeNow->toDateString())
+                ->whereTime('time', $timeNow->toTimeString())
+                ->exists()
+        );
     }
 }

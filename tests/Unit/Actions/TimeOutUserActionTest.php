@@ -53,14 +53,23 @@ class TimeOutUserActionTest extends TestCase
         $timeNow = now();
         $this->travelTo($timeNow->setHour(9)->setMinute(0));
         AttendanceLog::factory()->timeIn()->thisMorning()->create(['user_id' => $user->id]);
+        
+        // Travel to 17:00 (5 PM) to allow proper time-out
+        $this->travelTo($timeNow->setHour(17)->setMinute(0));
         app(TimeOutUserAction::class)($user);
 
         $this->assertDatabaseHas('attendance_logs', [
             'user_id' => $user->id,
             'status' => 'on-time',
-            'type' => 'in',
-            'date' => $timeNow->toDateString(),
-            'time' => $timeNow->toTimeString(),
+            'type' => 'out',
         ]);
+        
+        // Verify date separately since Laravel 12 casts date as datetime
+        $this->assertTrue(
+            AttendanceLog::where('user_id', $user->id)
+                ->where('type', 'out')
+                ->whereDate('date', $timeNow->toDateString())
+                ->exists()
+        );
     }
 }

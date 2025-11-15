@@ -24,10 +24,6 @@ class TimeInUserAction
             throw new AlreadyTimeInException;
         }
 
-        if ($user->hasTimeIn($time)) {
-            throw new AlreadyTimeInException;
-        }
-
         if ($user->isOffDay($time)) {
             throw new NotAllowedToTimeInException("It's your day-off");
         }
