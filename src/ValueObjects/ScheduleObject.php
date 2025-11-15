@@ -11,6 +11,5 @@ final class ScheduleObject
         public ?int $timeInAllowance = 0,
         public ?array $workDays = [],
         public ?array $offDays = [],
-    ) {
-    }
+    ) {}
 }

@@ -14,19 +14,17 @@ use Illuminate\Support\Carbon;
 
 class Attendance
 {
-    public function __construct(public Application $app)
-    {
-    }
+    public function __construct(public Application $app) {}
 
     /**
      * Get the currently authenticated user or null.
      */
-    public function getAuthUser(): null|CanLogAttendance
+    public function getAuthUser(): ?CanLogAttendance
     {
         return $this->app->auth->user();
     }
 
-    public function getUser(): null|CanLogAttendance
+    public function getUser(): ?CanLogAttendance
     {
         return $this->user ?? $this->getAuthUser();
     }
@@ -38,24 +36,24 @@ class Attendance
         return $this;
     }
 
-    public function getUserTimeInToday(): null|Carbon
+    public function getUserTimeInToday(): ?Carbon
     {
         return $this->getUser()?->getTimeIn()?->created_at;
     }
 
-    public function schedule(array $scheduleConfig = null): ScheduleObject
+    public function schedule(?array $scheduleConfig = null): ScheduleObject
     {
         $schedule = $scheduleConfig ?? config('attendance.schedule');
 
         return new ScheduleObject(...$schedule);
     }
 
-    public function timeIn(Carbon $time = null, array $scheduleConfig = null): void
+    public function timeIn(?Carbon $time = null, ?array $scheduleConfig = null): void
     {
         app(TimeInUserAction::class)($this->getUser(), $time, $scheduleConfig);
     }
 
-    public function timeOut(Carbon $time = null, array $scheduleConfig = null): void
+    public function timeOut(?Carbon $time = null, ?array $scheduleConfig = null): void
     {
         app(TimeOutUserAction::class)($this->getUser(), $time, $scheduleConfig);
     }
@@ -65,7 +63,7 @@ class Attendance
         app(LogUserAttendanceAction::class)($attendanceLogDto);
     }
 
-    public function isWorkDay(Carbon $time = null, array $scheduleConfig = null): bool
+    public function isWorkDay(?Carbon $time = null, ?array $scheduleConfig = null): bool
     {
         $time = $time ?? now();
         $schedule = $this->schedule($scheduleConfig);
@@ -73,7 +71,7 @@ class Attendance
         return in_array($time->dayName, $schedule->workDays);
     }
 
-    public function isOffDay(Carbon $time = null, array $scheduleConfig = null): bool
+    public function isOffDay(?Carbon $time = null, ?array $scheduleConfig = null): bool
     {
         $time = $time ?? now();
         $schedule = $this->schedule($scheduleConfig);
@@ -81,8 +79,8 @@ class Attendance
         return in_array($time->dayName, $schedule->offDays);
     }
 
-    //TODO: check for workday
-    public function timeInStatus(Carbon $time = null, array $scheduleConfig = null): string
+    // TODO: check for workday
+    public function timeInStatus(?Carbon $time = null, ?array $scheduleConfig = null): string
     {
         $timeInSchedule = now()->setHour($this->schedule($scheduleConfig)->timeIn)->setMinute($this->schedule($scheduleConfig)->timeInAllowance);
         $timeIn = $time ?? now();
@@ -93,7 +91,7 @@ class Attendance
         return AttendanceStatusEnum::late();
     }
 
-    public function timeOutStatus(Carbon $time = null, array $scheduleConfig = null): string
+    public function timeOutStatus(?Carbon $time = null, ?array $scheduleConfig = null): string
     {
         $timeOutSchedule = now()->setHour($this->schedule($scheduleConfig)->timeOut);
         $timeOut = $time ?? now();

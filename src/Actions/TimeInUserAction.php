@@ -13,24 +13,19 @@ use Illuminate\Support\Carbon;
 
 class TimeInUserAction
 {
-    public function __construct(public LogUserAttendanceAction $logUserAttendanceAction)
-    {
-    }
+    public function __construct(public LogUserAttendanceAction $logUserAttendanceAction) {}
 
     /**
-     * @param  CanLogAttendance  $user
-     * @param  ?Carbon  $time
-     *
      * @throws AlreadyTimeInException
      */
-    public function __invoke(CanLogAttendance $user, Carbon $time = null, array $scheduleConfig = null): void
+    public function __invoke(CanLogAttendance $user, ?Carbon $time = null, ?array $scheduleConfig = null): void
     {
         if ($user->hasTimeIn($time)) {
-            throw new AlreadyTimeInException();
+            throw new AlreadyTimeInException;
         }
 
         if ($user->hasTimeIn($time)) {
-            throw new AlreadyTimeInException();
+            throw new AlreadyTimeInException;
         }
 
         if ($user->isOffDay($time)) {
@@ -38,7 +33,7 @@ class TimeInUserAction
         }
 
         if (! $user->isWorkDay($time)) {
-            throw new NotAllowedToTimeInException();
+            throw new NotAllowedToTimeInException;
         }
 
         $status = Attendance::timeInStatus($time, $scheduleConfig);
@@ -47,7 +42,7 @@ class TimeInUserAction
             user: $user,
             type: new AttendanceTypeEnum('in'),
             status: new AttendanceStatusEnum($status),
-            time: $time ?? new Carbon()
+            time: $time ?? new Carbon
         ));
     }
 }

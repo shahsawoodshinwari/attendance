@@ -19,7 +19,7 @@ abstract class TestCase extends Orchestra
 
     protected CanLogAttendance $user;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -34,14 +34,14 @@ abstract class TestCase extends Orchestra
 
     public function setupUser()
     {
-        $this->user = new User();
+        $this->user = new User;
         $this->user->name = 'Ian';
         $this->user->save();
     }
 
     public function newUser(): User
     {
-        $user = new User();
+        $user = new User;
         $user->name = $this->faker()->name();
         $user->save();
 

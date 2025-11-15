@@ -19,7 +19,7 @@ trait HasAttendance
         return $this->hasMany(AttendanceLog::class);
     }
 
-    public function hasTimeIn(Carbon $time = null): bool
+    public function hasTimeIn(?Carbon $time = null): bool
     {
         return $this->attendance()
             ->where('date', $time ? $time->toDateString() : now()->toDateString())
@@ -27,7 +27,7 @@ trait HasAttendance
             ->exists();
     }
 
-    public function hasTimeOut(Carbon $time = null): bool
+    public function hasTimeOut(?Carbon $time = null): bool
     {
         return $this->attendance()
             ->where('date', $time ? $time->toDateString() : now()->toDateString())
@@ -35,12 +35,12 @@ trait HasAttendance
             ->exists();
     }
 
-    public function hasWorked(Carbon $time = null): bool
+    public function hasWorked(?Carbon $time = null): bool
     {
         return $this->hasTimeIn($time) && $this->hasTimeOut($time);
     }
 
-    public function getTimeIn(Carbon $time = null): ?Model
+    public function getTimeIn(?Carbon $time = null): ?Model
     {
         return $this->attendance()
             ->where('date', $time ? $time->toDateString() : now()->toDateString())
@@ -48,22 +48,22 @@ trait HasAttendance
             ->first();
     }
 
-    public function logAttendance($type, $status = 'on-time', Carbon $time = null): void
+    public function logAttendance($type, $status = 'on-time', ?Carbon $time = null): void
     {
         app(LogUserAttendanceAction::class)(new AttendanceLogDto(
             user: $this,
             type: new AttendanceTypeEnum($type),
             status: new AttendanceStatusEnum($status),
-            time: $time ?? new Carbon()
+            time: $time ?? new Carbon
         ));
     }
 
-    public function isOffDay(Carbon $time = null, $scheduleConfig = null): bool
+    public function isOffDay(?Carbon $time = null, $scheduleConfig = null): bool
     {
         return Attendance::isOffDay($time, $scheduleConfig);
     }
 
-    public function isWorkDay(Carbon $time = null, $scheduleConfig = null): bool
+    public function isWorkDay(?Carbon $time = null, $scheduleConfig = null): bool
     {
         return Attendance::isWorkDay($time, $scheduleConfig);
     }

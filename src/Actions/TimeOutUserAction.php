@@ -14,24 +14,19 @@ use Illuminate\Support\Carbon;
 
 class TimeOutUserAction
 {
-    public function __construct(public LogUserAttendanceAction $logUserAttendanceAction)
-    {
-    }
+    public function __construct(public LogUserAttendanceAction $logUserAttendanceAction) {}
 
     /**
-     * @param  CanLogAttendance  $user
-     * @param  ?Carbon  $time
-     *
      * @throws AlreadyTimeInException
      */
-    public function __invoke(CanLogAttendance $user, Carbon $time = null, array $scheduleConfig = null): void
+    public function __invoke(CanLogAttendance $user, ?Carbon $time = null, ?array $scheduleConfig = null): void
     {
         if (! $user->hasTimeIn($time)) {
-            throw new NoTimeInException();
+            throw new NoTimeInException;
         }
 
         if ($user->hasTimeOut($time)) {
-            throw new AlreadyTimeOutException();
+            throw new AlreadyTimeOutException;
         }
 
         $status = Attendance::timeOutStatus($time, $scheduleConfig);
@@ -40,7 +35,7 @@ class TimeOutUserAction
             user: $user,
             type: new AttendanceTypeEnum('out'),
             status: new AttendanceStatusEnum($status),
-            time: $time ?? new Carbon()
+            time: $time ?? new Carbon
         ));
     }
 }

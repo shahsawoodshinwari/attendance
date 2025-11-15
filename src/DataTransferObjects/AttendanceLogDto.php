@@ -14,6 +14,5 @@ final class AttendanceLogDto
         public AttendanceTypeEnum $type,
         public AttendanceStatusEnum $status,
         public ?Carbon $time = null,
-    ) {
-    }
+    ) {}
 }
